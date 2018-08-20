@@ -1,0 +1,165 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<title>문어 자료 정보 관리 도구</title>
+<link rel="stylesheet" type="text/css" href="https://bootswatch.com/4/materia/bootstrap.min.css">
+<style>
+	body {
+		padding-top: 120px
+	}
+</style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-danger">
+	<div class="container">
+		<a class="navbar-brand" href="index.html">문어 자료 정보 관리 도구</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbarColor01">
+		<ul class="navbar-nav mr-auto">
+			<li class="nav-item">
+			<a class="nav-link" href="index.html">대문</a>
+			</li>
+			<li class="nav-item dropdown active">
+			<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" id="inputs">정보 신규입력/갱신 <span class="sr-only">(현재)</span></a>
+			<div class="dropdown-menu" aria-labelledby="inputs">
+				<a class="dropdown-item active" href="#">원전 사용 승인 / 서지 정보 입력</a>
+				<a class="dropdown-item" href="input2.html<?php if(isset($_SERVER["QUERY_STRING"]))echo("?".$_SERVER["QUERY_STRING"]); ?>">원시 말뭉치 파일 정보 입력</a>
+			</div>
+			</li>
+			<li class="nav-item">
+			<a class="nav-link" href="viewer.html">인덱스 리스트 뷰어</a>
+			</li>
+			<li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" id="exports">내보내기</a>
+			<div class="dropdown-menu" aria-labelledby="exports">
+				<a class="dropdown-item" href="export_json.php">JSON(note 포함)</a>
+				<a class="dropdown-item" href="export_xml.php">XML(note 포함)</a>
+				<a class="dropdown-item" href="export_csv.php">CSV(note 제외)</a>
+			</div>
+			</li>
+		</ul>
+<?php
+session_start();
+if(!isset($_SESSION["user_id"]))header("Location: index.html");
+else echo '
+		<form class="form-inline my-2 my-lg-0" action="logout.php">
+			<span class="nav-link">'.$_SESSION["user_name"].'님</span>
+			<button class="btn btn-secondary my-2 my-sm-0" type="submit">로그아웃</button>
+		</form>';
+?>
+		</div>
+	</div>
+</nav>
+<div class="container">
+<?php
+require("connect.php");
+$result=mysqli_query($connection,"SELECT COUNT(*) FROM informations;");
+$tot=intval(mysqli_fetch_row($result)[0]);
+$id=@$_GET["id"]?intval($_GET["id"]):$tot+1;
+if($id>$tot+1)header("Location: input.html?id=".($tot+1));
+?>
+<div class="row">
+  <ul class="pagination mx-auto">
+    <li class="page-item<?php if($id==1)echo(" disabled"); ?>">
+      <a class="page-link" href="input.html?id=<?php echo($id-1); ?>">&laquo;</a>
+    </li>
+    <li class="page-item active">
+      <a class="page-link" style="padding: 0;"><input type="number" class="form-control" value="<?php echo($id); ?>" style="width: 50px; height: 1em; text-align: center; font-size: 0.8125rem" onkeydown="if(event.keyCode===13)window.location.href='input.html?id='+this.value;"></a>
+    </li>
+    <li class="page-item disabled">
+      <a class="page-link" href="#">/ <?php echo($tot); ?></a>
+    </li>
+    <li class="page-item<?php if($id>$tot)echo(" disabled"); ?>">
+      <a class="page-link" href="input.html?id=<?php echo($id+1); ?>">&raquo;</a>
+    </li>
+  </ul>
+</div>
+<legend>원전 사용 승인 / 서지 정보 입력</legend>
+<form method="post" action="input.php">
+<div class="row">
+	<div class="col-md-6">
+		<label for="inputTitle">제목</label>
+		<input type="text" class="form-control" id="inputTitle" placeholder="">
+	</div>
+	<div class="col-md-3">
+		<div class="form-group">
+			<label for="inputPermittedAt">사용 승인</label>
+			<input type="number" class="form-control" id="inputPermittedAt" placeholder="20180803" maxlength="8" oninput="if(this.value.length>this.maxLength)this.value=this.value.slice(0,this.maxLength);">
+		</div>
+	</div>
+	<div class="col-md-3">
+		<div class="form-group">
+			<label for="inputObtainedAt">파일 입수</label>
+			<input type="number" class="form-control" id="inputObtainedAt" placeholder="20180803" maxlength="8" oninput="if(this.value.length>this.maxLength)this.value=this.value.slice(0,this.maxLength);">
+		</div>
+	</div>
+</div>
+<div class="form-group">
+	<label>서지 출처</label>
+	<div class="custom-control custom-radio">
+		<input type="radio" class="custom-control-input" name="optionsRadios" id="optionsRadios1" value="option1" onclick="document.getElementById('referenceEtc').disabled=!document.getElementById('optionsRadios3').checked;">
+		<label class="custom-control-label" for="optionsRadios1">국립중앙도서관</label>
+	</div>
+	<div class="custom-control custom-radio">
+		<input type="radio" class="custom-control-input" name="optionsRadios" id="optionsRadios2" value="option2" onclick="document.getElementById('referenceEtc').disabled=!document.getElementById('optionsRadios3').checked;">
+		<label class="custom-control-label" for="optionsRadios2">아동청소년도서관</label>
+	</div>
+	<div class="custom-control custom-radio">
+		<input type="radio" class="custom-control-input" name="optionsRadios" id="optionsRadios3" value="option3" onclick="document.getElementById('referenceEtc').disabled=!document.getElementById('optionsRadios3').checked;">
+		<label class="custom-control-label" for="optionsRadios3">기타<input type="text" class="form-control" id="referenceEtc" placeholder="기타 선택 후 입력해주세요" disabled=""></label>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-4">
+		<div class="form-group">
+			<label for="inputAuthor">저자</label>
+			<input type="text" class="form-control" id="inputAuthor" placeholder="">
+		</div>
+	</div>
+	<div class="col-md-4">
+		<div class="form-group">
+			<label for="inputTranslator">역자</label>
+			<input type="text" class="form-control" id="inputTranslator" placeholder="">
+		</div>
+	</div>
+	<div class="col-md-4">
+		<div class="form-group">
+			<label for="inputCopyrightHolder">저작권자</label>
+			<input type="text" class="form-control" id="inputCopyrightHolder" placeholder="">
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-4">
+		<div class="form-group">
+			<label for="inputPublisher">출판사</label>
+			<input type="text" class="form-control" id="inputPublisher" placeholder="">
+		</div>
+	</div>
+	<div class="col-md-4">
+		<div class="form-group">
+			<label for="inputYear">발행연도</label>
+			<input type="number" class="form-control" id="inputYear" placeholder="2018" maxlength="4" oninput="if(this.value.length>this.maxLength)this.value=this.value.slice(0,this.maxLength);">
+		</div>
+	</div>
+	<div class="col-md-4">
+		<div class="form-group">
+			<label for="inputClassCode">십진분류</label>
+			<input type="text" class="form-control" id="inputClassCode" placeholder="">
+		</div>
+	</div>
+</div>
+<div class="form-group">
+	<label for="exampleTextarea">메모</label>
+	<textarea class="form-control" id="exampleTextarea" rows="3"></textarea>
+</div>
+</form>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+</body>
+</html>

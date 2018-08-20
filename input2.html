@@ -1,0 +1,153 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<title>문어 자료 정보 관리 도구</title>
+<link rel="stylesheet" type="text/css" href="https://bootswatch.com/4/materia/bootstrap.min.css">
+<style>
+	body {
+		padding-top: 120px
+	}
+</style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-danger">
+	<div class="container">
+		<a class="navbar-brand" href="index.html">문어 자료 정보 관리 도구</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbarColor01">
+		<ul class="navbar-nav mr-auto">
+			<li class="nav-item">
+			<a class="nav-link" href="index.html">대문</a>
+			</li>
+			<li class="nav-item dropdown active">
+			<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" id="inputs">정보 신규입력/갱신 <span class="sr-only">(현재)</span></a>
+			<div class="dropdown-menu" aria-labelledby="inputs">
+				<a class="dropdown-item" href="input.html<?php if(isset($_SERVER["QUERY_STRING"]))echo("?".$_SERVER["QUERY_STRING"]); ?>">원전 사용 승인 / 서지 정보 입력</a>
+				<a class="dropdown-item active" href="#">원시 말뭉치 파일 정보 입력</a>
+			</div>
+			</li>
+			<li class="nav-item">
+			<a class="nav-link" href="viewer.html">인덱스 리스트 뷰어</a>
+			</li>
+			<li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" id="exports">내보내기</a>
+			<div class="dropdown-menu" aria-labelledby="exports">
+				<a class="dropdown-item" href="export_json.php">JSON(note 포함)</a>
+				<a class="dropdown-item" href="export_xml.php">XML(note 포함)</a>
+				<a class="dropdown-item" href="export_csv.php">CSV(note 제외)</a>
+			</div>
+			</li>
+		</ul>
+<?php
+session_start();
+if(!isset($_SESSION["user_id"]))header("Location: index.html");
+else echo '
+		<form class="form-inline my-2 my-lg-0" action="logout.php">
+			<span class="nav-link">'.$_SESSION["user_name"].'님</span>
+			<button class="btn btn-secondary my-2 my-sm-0" type="submit">로그아웃</button>
+		</form>';
+?>
+		</div>
+	</div>
+</nav>
+<div class="container">
+<?php
+require("connect.php");
+$result=mysqli_query($connection,"SELECT COUNT(*) FROM informations;");
+$tot=intval(mysqli_fetch_row($result)[0]);
+$id=@$_GET["id"]?intval($_GET["id"]):$tot+1;
+if($id>$tot+1)header("Location: input2.html?id=".($tot+1));
+?>
+<div class="row">
+  <ul class="pagination mx-auto">
+    <li class="page-item<?php if($id==1)echo(" disabled"); ?>">
+      <a class="page-link" href="input2.html?id=<?php echo($id-1); ?>">&laquo;</a>
+    </li>
+    <li class="page-item active">
+      <a class="page-link" style="padding: 0;"><input type="number" class="form-control" value="<?php echo($id); ?>" style="width: 50px; height: 1em; text-align: center; font-size: 0.8125rem" onkeydown="if(event.keyCode===13)window.location.href='input2.html?id='+this.value;"></a>
+    </li>
+    <li class="page-item disabled">
+      <a class="page-link" href="#">/ <?php echo($tot); ?></a>
+    </li>
+    <li class="page-item<?php if($id>$tot)echo(" disabled"); ?>">
+      <a class="page-link" href="input2.html?id=<?php echo($id+1); ?>">&raquo;</a>
+    </li>
+  </ul>
+</div>
+<legend>원시 말뭉치 파일 정보 입력</legend>
+<form method="post" action="input2.php">
+<div class="form-group">
+	<label for="inputTitle">제목</label>
+	<input type="text" class="form-control" id="inputTitle" value="(제목이 나타날 곳)" readonly="">
+</div>
+<div class="form-group">
+	<label>장르 구분</label>
+	<div class="custom-control custom-radio">
+		<input type="radio" class="custom-control-input" name="optionsRadios1" id="optionsRadios1_1" value="option1">
+		<label class="custom-control-label" for="optionsRadios1_1">신문</label>
+	</div>
+	<div class="custom-control custom-radio">
+		<input type="radio" class="custom-control-input" name="optionsRadios1" id="optionsRadios1_2" value="option2">
+		<label class="custom-control-label" for="optionsRadios1_2">잡지</label>
+	</div>
+	<div class="custom-control custom-radio">
+		<input type="radio" class="custom-control-input" name="optionsRadios1" id="optionsRadios1_3" value="option3">
+		<label class="custom-control-label" for="optionsRadios1_3">책-상상</label>
+	</div>
+	<div class="custom-control custom-radio">
+		<input type="radio" class="custom-control-input" name="optionsRadios1" id="optionsRadios1_4" value="option4">
+		<label class="custom-control-label" for="optionsRadios1_4">책-정보</label>
+	</div>
+	<div class="custom-control custom-radio">
+		<input type="radio" class="custom-control-input" name="optionsRadios1" id="optionsRadios1_5" value="option5">
+		<label class="custom-control-label" for="optionsRadios1_5">기타</label>
+	</div>
+</div>
+<div class="form-group">
+	<label>샘플링방식</label>
+	<div class="custom-control custom-radio">
+		<input type="radio" class="custom-control-input" name="optionsRadios2" id="optionsRadios2_1" value="option1" onclick="document.getElementById('samplingEtc').disabled=!document.getElementById('optionsRadios2_3').checked;">
+		<label class="custom-control-label" for="optionsRadios2_1">전체</label>
+	</div>
+	<div class="custom-control custom-radio">
+		<input type="radio" class="custom-control-input" name="optionsRadios2" id="optionsRadios2_2" value="option2" onclick="document.getElementById('samplingEtc').disabled=!document.getElementById('optionsRadios2_3').checked;">
+		<label class="custom-control-label" for="optionsRadios2_2">무작위</label>
+	</div>
+	<div class="custom-control custom-radio">
+		<input type="radio" class="custom-control-input" name="optionsRadios2" id="optionsRadios2_3" value="option3" onclick="document.getElementById('samplingEtc').disabled=!document.getElementById('optionsRadios2_3').checked;">
+		<label class="custom-control-label" for="optionsRadios2_3">기타<input type="text" class="form-control" id="samplingEtc" placeholder="기타 선택 후 입력해주세요" disabled=""></label>
+	</div>
+</div>
+<div class="form-group">
+	<label>작업 단계(완료)</label>
+	<div class="custom-control custom-radio">
+		<input type="radio" class="custom-control-input" name="optionsRadios3" id="optionsRadios3_1" value="option1">
+		<label class="custom-control-label" for="optionsRadios3_1">sampled</label>
+	</div>
+	<div class="custom-control custom-radio">
+		<input type="radio" class="custom-control-input" name="optionsRadios3" id="optionsRadios3_2" value="option2">
+		<label class="custom-control-label" for="optionsRadios3_2">filtered</label>
+	</div>
+	<div class="custom-control custom-radio">
+		<input type="radio" class="custom-control-input" name="optionsRadios3" id="optionsRadios3_3" value="option3">
+		<label class="custom-control-label" for="optionsRadios3_3">segmented</label>
+	</div>
+	<div class="custom-control custom-radio">
+		<input type="radio" class="custom-control-input" name="optionsRadios3" id="optionsRadios3_4" value="option4">
+		<label class="custom-control-label" for="optionsRadios3_4">inspected</label>
+	</div>
+</div>
+<div class="form-group">
+	<label for="exampleTextarea">메모</label>
+	<textarea class="form-control" id="exampleTextarea" rows="3"></textarea>
+</div>
+</form>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+</body>
+</html>

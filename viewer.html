@@ -1,0 +1,99 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<title>문어 자료 정보 관리 도구</title>
+<link rel="stylesheet" type="text/css" href="https://bootswatch.com/4/materia/bootstrap.min.css">
+<style>
+	body {
+		padding-top: 120px
+	}
+</style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-danger">
+	<div class="container">
+		<a class="navbar-brand" href="index.html">문어 자료 정보 관리 도구</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbarColor01">
+		<ul class="navbar-nav mr-auto">
+			<li class="nav-item">
+			<a class="nav-link" href="index.html">대문</a>
+			</li>
+			<li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" id="inputs">정보 신규입력/갱신 <span class="sr-only">(현재)</span></a>
+			<div class="dropdown-menu" aria-labelledby="inputs">
+				<a class="dropdown-item" href="input.html">원전 사용 승인 / 서지 정보 입력</a>
+				<a class="dropdown-item" href="input2.html">원시 말뭉치 파일 정보 입력</a>
+			</div>
+			</li>
+			<li class="nav-item active">
+			<a class="nav-link" href="viewer.html">인덱스 리스트 뷰어</a>
+			</li>
+			<li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" id="exports">내보내기</a>
+			<div class="dropdown-menu" aria-labelledby="exports">
+				<a class="dropdown-item" href="export_json.php">JSON(note 포함)</a>
+				<a class="dropdown-item" href="export_xml.php">XML(note 포함)</a>
+				<a class="dropdown-item" href="export_csv.php">CSV(note 제외)</a>
+			</div>
+			</li>
+		</ul>
+<?php
+session_start();
+if(!isset($_SESSION["user_id"]))echo '
+		<form class="form-inline my-2 my-lg-0" method="post" action="login.php">
+			<input class="form-control mr-sm-2" type="text" placeholder="아이디" style="width: 70px" name="id" required>
+			<input class="form-control mr-sm-2" type="password" placeholder="비밀번호" style="width: 70px" name="password" required>
+			<button class="btn btn-secondary my-2 my-sm-0" type="submit">로그인</button>
+		</form>';
+else echo '
+		<form class="form-inline my-2 my-lg-0" action="logout.php">
+			<span class="nav-link">'.$_SESSION["user_name"].'님</span>
+			<button class="btn btn-secondary my-2 my-sm-0" type="submit">로그아웃</button>
+		</form>';
+?>
+		</div>
+	</div>
+</nav>
+<div class="container-fluid">
+<table class="table table-striped table-hover">
+  <thead>
+    <tr>
+<?php
+require("connect.php");
+$result=mysqli_query($connection,"SELECT * FROM informations");
+$th="";
+while($property=mysqli_fetch_field($result))$th.='<th scope="col">'.htmlspecialchars($property->name)."</th>";
+echo($th);
+?>
+    </tr>
+  </thead>
+  <tbody>
+<?php
+$tbody="";
+while($row=mysqli_fetch_row($result))
+{
+	$tbody.='<tr class="clickable-row" data-href="input.html?id='.$row[0].'">';
+	foreach($row as $col)$tbody.="<td nowrap>".str_replace("\n","<br>",str_replace("\r\n","<br>",htmlspecialchars($col)))."</td>";
+	$tbody.="</tr></a>";
+}
+echo($tbody);
+?>
+  </tbody>
+</table>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+<script>
+jQuery(document).ready(function($) {
+    $(".clickable-row").click(function() {
+        window.location = $(this).data("href");
+    });
+});
+</script>
+</body>
+</html>
