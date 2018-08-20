@@ -15,5 +15,5 @@ if(isset($_POST["id"])&&isset($_POST["password"]))
 		$_SESSION["user_name"]=$row["name"];
 	}
 }
-header("Location: index.html");
+header("Location: index.html?login_success");
 ?>

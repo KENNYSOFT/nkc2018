@@ -44,14 +44,14 @@
 <?php
 session_start();
 if(!isset($_SESSION["user_id"]))echo '
-		<form class="form-inline my-2 my-lg-0" method="post" action="login.php">
-			<input class="form-control mr-sm-2" type="text" placeholder="아이디" style="width: 70px" name="id" required>
-			<input class="form-control mr-sm-2" type="password" placeholder="비밀번호" style="width: 70px" name="password" required>
+		<form class="form-inline my-2 my-lg-0 navbar-nav" method="post" action="login.php">
+			<input class="form-control mr-sm-2 nav-link active" type="text" placeholder="아이디" style="width: 70px" name="id" required>
+			<input class="form-control mr-sm-2 nav-link active" type="password" placeholder="비밀번호" style="width: 70px" name="password" required>
 			<button class="btn btn-secondary my-2 my-sm-0" type="submit">로그인</button>
 		</form>';
 else echo '
-		<form class="form-inline my-2 my-lg-0" action="logout.php">
-			<span class="nav-link">'.$_SESSION["user_name"].'님</span>
+		<form class="form-inline my-2 my-lg-0 navbar-nav" action="logout.php">
+			<span class="nav-link active">'.$_SESSION["user_name"].'님</span>
 			<button class="btn btn-secondary my-2 my-sm-0" type="submit">로그아웃</button>
 		</form>';
 ?>
@@ -59,9 +59,35 @@ else echo '
 	</div>
 </nav>
 <div class="container">
-<div style="text-align: center">
+<?php
+if(isset($_GET["error"]))echo '
+<div class="alert alert-dismissible alert-danger">
+	<button type="button" class="close" data-dismiss="alert">&times;</button>
+	<h4 class="alert-heading">오류가 발생했습니다.</h4>
+	<p class="mb-0">알 수 없는 오류가 발생했습니다. 어떤 상황에서 발생했는지 개발자에게 알려주시면 감사하겠습니다.</p>
+</div>';
+if(isset($_GET["login_needed"]))echo '
+<div class="alert alert-dismissible alert-warning">
+	<button type="button" class="close" data-dismiss="alert">&times;</button>
+	<h4 class="alert-heading">로그인이 필요합니다.</h4>
+	<p class="mb-0">정보를 입력하기 위해서는 로그인이 필요합니다.</p>
+</div>';
+if(isset($_GET["login_success"])&&isset($_SESSION["user_id"]))echo '
+<div class="alert alert-dismissible alert-success">
+	<button type="button" class="close" data-dismiss="alert">&times;</button>
+	<h4 class="alert-heading">로그인되었습니다.</h4>
+	<p class="mb-0">'.$_SESSION["user_name"].'님으로 로그인되었습니다.</p>
+</div>';
+if(isset($_GET["logout_success"]))echo '
+<div class="alert alert-dismissible alert-info">
+	<button type="button" class="close" data-dismiss="alert">&times;</button>
+	<h4 class="alert-heading">로그아웃되었습니다.</h4>
+	<p class="mb-0">수고하셨습니다.</p>
+</div>';
+?>
+<div style="text-align: center;">
 <h1>문어 자료 정보 관리 도구</h1>
-<h3>2018년 8월 3일</h3>
+<h3>2018년 8월 20일</h3>
 <h3>박현민</h3>
 <img src="1.png">
 <img src="2.png">

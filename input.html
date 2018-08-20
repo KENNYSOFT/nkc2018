@@ -1,7 +1,20 @@
+<?php
+require("connect.php");
+$result=mysqli_query($connection,"SELECT COUNT(*) FROM informations;");
+$tot=intval(mysqli_fetch_row($result)[0]);
+$id=@$_GET["id"]?intval($_GET["id"]):$tot+1;
+if($id>$tot+1)header("Location: input.html?id=".($tot+1));
+if($id<=$tot)
+{
+	$result=mysqli_query($connection,"SELECT * FROM informations WHERE _id=".$id.";");
+	if(!$result)Header("Location: index.html?error");
+	$result=mysqli_fetch_assoc($result);
+}
+?>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>문어 자료 정보 관리 도구</title>
+<title>원전 사용 승인 / 서지 정보 <?php echo $id==$tot+1?"입력":"갱신" ?></title>
 <link rel="stylesheet" type="text/css" href="https://bootswatch.com/4/materia/bootstrap.min.css">
 <style>
 	body {
@@ -43,10 +56,10 @@
 		</ul>
 <?php
 session_start();
-if(!isset($_SESSION["user_id"]))header("Location: index.html");
+if(!isset($_SESSION["user_id"]))header("Location: index.html?login_needed");
 else echo '
-		<form class="form-inline my-2 my-lg-0" action="logout.php">
-			<span class="nav-link">'.$_SESSION["user_name"].'님</span>
+		<form class="form-inline my-2 my-lg-0 navbar-nav" action="logout.php">
+			<span class="nav-link active">'.$_SESSION["user_name"].'님</span>
 			<button class="btn btn-secondary my-2 my-sm-0" type="submit">로그아웃</button>
 		</form>';
 ?>
@@ -54,13 +67,6 @@ else echo '
 	</div>
 </nav>
 <div class="container">
-<?php
-require("connect.php");
-$result=mysqli_query($connection,"SELECT COUNT(*) FROM informations;");
-$tot=intval(mysqli_fetch_row($result)[0]);
-$id=@$_GET["id"]?intval($_GET["id"]):$tot+1;
-if($id>$tot+1)header("Location: input.html?id=".($tot+1));
-?>
 <div class="row">
   <ul class="pagination mx-auto">
     <li class="page-item<?php if($id==1)echo(" disabled"); ?>">
@@ -77,58 +83,59 @@ if($id>$tot+1)header("Location: input.html?id=".($tot+1));
     </li>
   </ul>
 </div>
-<legend>원전 사용 승인 / 서지 정보 입력</legend>
 <form method="post" action="input.php">
+<input type="hidden" name="_id" value="<?php echo $id; ?>">
+<legend>원전 사용 승인 / 서지 정보 <?php echo $id==$tot+1?"입력":"갱신" ?> <button type="submit" class="btn btn-primary">저장</button></legend>
 <div class="row">
 	<div class="col-md-6">
 		<label for="inputTitle">제목</label>
-		<input type="text" class="form-control" id="inputTitle" placeholder="">
+		<input type="text" class="form-control" name="title" id="inputTitle" value="<?php if($id<=$tot)echo $result["title"]; ?>" placeholder="">
 	</div>
 	<div class="col-md-3">
 		<div class="form-group">
 			<label for="inputPermittedAt">사용 승인</label>
-			<input type="number" class="form-control" id="inputPermittedAt" placeholder="20180803" maxlength="8" oninput="if(this.value.length>this.maxLength)this.value=this.value.slice(0,this.maxLength);">
+			<input type="date" class="form-control" name="permitted_at" id="inputPermittedAt" value="<?php if($id<=$tot)echo $result["permitted_at"]; ?>">
 		</div>
 	</div>
 	<div class="col-md-3">
 		<div class="form-group">
 			<label for="inputObtainedAt">파일 입수</label>
-			<input type="number" class="form-control" id="inputObtainedAt" placeholder="20180803" maxlength="8" oninput="if(this.value.length>this.maxLength)this.value=this.value.slice(0,this.maxLength);">
+			<input type="date" class="form-control" name="obtained_at" id="inputObtainedAt" value="<?php if($id<=$tot)echo $result["obtained_at"]; ?>">
 		</div>
 	</div>
 </div>
 <div class="form-group">
 	<label>서지 출처</label>
 	<div class="custom-control custom-radio">
-		<input type="radio" class="custom-control-input" name="optionsRadios" id="optionsRadios1" value="option1" onclick="document.getElementById('referenceEtc').disabled=!document.getElementById('optionsRadios3').checked;">
+		<input type="radio" class="custom-control-input" name="reference" id="optionsRadios1" <?php if($id<=$tot&&$result["reference"]=="국립중앙도서관")echo "checked"; ?> value="국립중앙도서관">
 		<label class="custom-control-label" for="optionsRadios1">국립중앙도서관</label>
 	</div>
 	<div class="custom-control custom-radio">
-		<input type="radio" class="custom-control-input" name="optionsRadios" id="optionsRadios2" value="option2" onclick="document.getElementById('referenceEtc').disabled=!document.getElementById('optionsRadios3').checked;">
+		<input type="radio" class="custom-control-input" name="reference" id="optionsRadios2" <?php if($id<=$tot&&$result["reference"]=="아동청소년도서관")echo "checked"; ?> value="아동청소년도서관">
 		<label class="custom-control-label" for="optionsRadios2">아동청소년도서관</label>
 	</div>
 	<div class="custom-control custom-radio">
-		<input type="radio" class="custom-control-input" name="optionsRadios" id="optionsRadios3" value="option3" onclick="document.getElementById('referenceEtc').disabled=!document.getElementById('optionsRadios3').checked;">
-		<label class="custom-control-label" for="optionsRadios3">기타<input type="text" class="form-control" id="referenceEtc" placeholder="기타 선택 후 입력해주세요" disabled=""></label>
+		<input type="radio" class="custom-control-input" name="reference" id="optionsRadios3" <?php if($id<=$tot&&$result["reference"]!=""&&$result["reference"]!="국립중앙도서관"&&$result["reference"]!="아동청소년도서관")echo "checked"; ?> value="기타">
+		<label class="custom-control-label" for="optionsRadios3">기타<input type="text" class="form-control" name="reference_etc" id="referenceEtc" value="<?php if($id<=$tot&&$result["reference"]!="국립중앙도서관"&&$result["reference"]!="아동청소년도서관")echo $result["reference"]; ?>" onclick="document.getElementById('optionsRadios3').checked=true;"></label>
 	</div>
 </div>
 <div class="row">
 	<div class="col-md-4">
 		<div class="form-group">
 			<label for="inputAuthor">저자</label>
-			<input type="text" class="form-control" id="inputAuthor" placeholder="">
+			<input type="text" class="form-control" name="author" id="inputAuthor" value="<?php if($id<=$tot)echo $result["author"]; ?>" placeholder="">
 		</div>
 	</div>
 	<div class="col-md-4">
 		<div class="form-group">
 			<label for="inputTranslator">역자</label>
-			<input type="text" class="form-control" id="inputTranslator" placeholder="">
+			<input type="text" class="form-control" name="translator" id="inputTranslator" value="<?php if($id<=$tot)echo $result["translator"]; ?>" placeholder="">
 		</div>
 	</div>
 	<div class="col-md-4">
 		<div class="form-group">
 			<label for="inputCopyrightHolder">저작권자</label>
-			<input type="text" class="form-control" id="inputCopyrightHolder" placeholder="">
+			<input type="text" class="form-control" name="copyright_holder" id="inputCopyrightHolder" value="<?php if($id<=$tot)echo $result["copyright_holder"]; ?>" placeholder="">
 		</div>
 	</div>
 </div>
@@ -136,25 +143,25 @@ if($id>$tot+1)header("Location: input.html?id=".($tot+1));
 	<div class="col-md-4">
 		<div class="form-group">
 			<label for="inputPublisher">출판사</label>
-			<input type="text" class="form-control" id="inputPublisher" placeholder="">
+			<input type="text" class="form-control" name="publisher" id="inputPublisher" value="<?php if($id<=$tot)echo $result["publisher"]; ?>" placeholder="">
 		</div>
 	</div>
 	<div class="col-md-4">
 		<div class="form-group">
 			<label for="inputYear">발행연도</label>
-			<input type="number" class="form-control" id="inputYear" placeholder="2018" maxlength="4" oninput="if(this.value.length>this.maxLength)this.value=this.value.slice(0,this.maxLength);">
+			<input type="number" class="form-control" name="year" id="inputYear" value="<?php if($id<=$tot)echo $result["year"]; ?>" placeholder="2018" maxlength="4" oninput="if(this.value.length>this.maxLength)this.value=this.value.slice(0,this.maxLength);">
 		</div>
 	</div>
 	<div class="col-md-4">
 		<div class="form-group">
 			<label for="inputClassCode">십진분류</label>
-			<input type="text" class="form-control" id="inputClassCode" placeholder="">
+			<input type="text" class="form-control" name="class_code" id="inputClassCode" value="<?php if($id<=$tot)echo $result["class_code"]; ?>" placeholder="">
 		</div>
 	</div>
 </div>
 <div class="form-group">
-	<label for="exampleTextarea">메모</label>
-	<textarea class="form-control" id="exampleTextarea" rows="3"></textarea>
+	<label for="inputNote">메모</label>
+	<textarea class="form-control" name="note" id="inputNote" rows="3"></textarea>
 </div>
 </form>
 </div>

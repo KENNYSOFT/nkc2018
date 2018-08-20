@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>문어 자료 정보 관리 도구</title>
+<title>인덱스 리스트 뷰어</title>
 <link rel="stylesheet" type="text/css" href="https://bootswatch.com/4/materia/bootstrap.min.css">
 <style>
 	body {
@@ -44,14 +44,14 @@
 <?php
 session_start();
 if(!isset($_SESSION["user_id"]))echo '
-		<form class="form-inline my-2 my-lg-0" method="post" action="login.php">
-			<input class="form-control mr-sm-2" type="text" placeholder="아이디" style="width: 70px" name="id" required>
-			<input class="form-control mr-sm-2" type="password" placeholder="비밀번호" style="width: 70px" name="password" required>
+		<form class="form-inline my-2 my-lg-0 navbar-nav" method="post" action="login.php">
+			<input class="form-control mr-sm-2 nav-link active" type="text" placeholder="아이디" style="width: 70px" name="id" required>
+			<input class="form-control mr-sm-2 nav-link active" type="password" placeholder="비밀번호" style="width: 70px" name="password" required>
 			<button class="btn btn-secondary my-2 my-sm-0" type="submit">로그인</button>
 		</form>';
 else echo '
-		<form class="form-inline my-2 my-lg-0" action="logout.php">
-			<span class="nav-link">'.$_SESSION["user_name"].'님</span>
+		<form class="form-inline my-2 my-lg-0 navbar-nav" action="logout.php">
+			<span class="nav-link active">'.$_SESSION["user_name"].'님</span>
 			<button class="btn btn-secondary my-2 my-sm-0" type="submit">로그아웃</button>
 		</form>';
 ?>
@@ -64,9 +64,23 @@ else echo '
     <tr>
 <?php
 require("connect.php");
-$result=mysqli_query($connection,"SELECT * FROM informations");
+$order=NULL;
+if(@$_GET["order"]=="ascending")$order="ASC";
+if(@$_GET["order"]=="descending")$order="DESC";
+$query="SELECT * FROM informations";
+if(isset($_GET["pivot"])&&isset($order))$query.=" ORDER BY ".$_GET["pivot"]." ".$order;
+$result=mysqli_query($connection,$query);
+if(!$result)Header("Location: viewer.html");
 $th="";
-while($property=mysqli_fetch_field($result))$th.='<th scope="col">'.htmlspecialchars($property->name)."</th>";
+while($property=mysqli_fetch_field($result))
+{
+	if($property->name==@$_GET["pivot"]&&isset($order))
+	{
+		if($order=="ASC")$th.='<th scope="col"><a href="viewer.html?pivot='.htmlspecialchars($property->name).'&order=descending">'.htmlspecialchars($property->name)."</a>▲</th>";
+		if($order=="DESC")$th.='<th scope="col"><a href="viewer.html?pivot='.htmlspecialchars($property->name).'&order=ascending">'.htmlspecialchars($property->name)."</a>▼</th>";
+	}
+	else $th.='<th scope="col"><a href="viewer.html?pivot='.htmlspecialchars($property->name).'&order=ascending">'.htmlspecialchars($property->name)."</a></th>";
+}
 echo($th);
 ?>
     </tr>
