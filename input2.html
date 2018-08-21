@@ -67,13 +67,27 @@ else echo '
 	</div>
 </nav>
 <div class="container">
+<?php
+if(isset($_GET["error"]))echo '
+<div class="alert alert-dismissible alert-danger">
+	<button type="button" class="close" data-dismiss="alert">&times;</button>
+	<h4 class="alert-heading">오류가 발생했습니다.</h4>
+	<p class="mb-0">알 수 없는 오류가 발생했습니다. 어떤 상황이었는지 개발자에게 알려주시면 감사하겠습니다.</p>
+</div>';
+if(isset($_GET["save_success"]))echo '
+<div class="alert alert-dismissible alert-success">
+	<button type="button" class="close" data-dismiss="alert">&times;</button>
+	<h4 class="alert-heading">저장되었습니다.</h4>
+	<p class="mb-0">입력하신 내용이 모두 저장되었습니다.</p>
+</div>';
+?>
 <div class="row">
   <ul class="pagination mx-auto">
     <li class="page-item<?php if($id==1)echo(" disabled"); ?>">
       <a class="page-link" href="input2.html?id=<?php echo($id-1); ?>">&laquo;</a>
     </li>
     <li class="page-item active">
-      <a class="page-link" style="padding: 0;"><input type="number" class="form-control" value="<?php echo($id); ?>" style="width: 50px; height: 1em; text-align: center; font-size: 0.8125rem" onkeydown="if(event.keyCode===13)window.location.href='input2.html?id='+this.value;"></a>
+      <a class="page-link" style="padding: 0;"><input type="number" class="form-control" value="<?php echo($id); ?>" style="width: 50px; height: 1em; text-align: center; font-size: 0.8125rem; color: white;" onkeydown="if(event.keyCode===13)window.location.href='input2.html?id='+this.value;"></a>
     </li>
     <li class="page-item disabled">
       <a class="page-link" href="#">/ <?php echo($tot); ?></a>
@@ -139,7 +153,7 @@ else echo '
 		<label class="custom-control-label" for="optionsRadios3_2">filtered</label>
 	</div>
 	<div class="custom-control custom-radio">
-		<input type="radio" class="custom-control-input" name="phase" id="optionsRadios3_3" <?php if($id<=$tot&&$result["phase"]=="sgemented")echo "checked"; ?> value="segmented">
+		<input type="radio" class="custom-control-input" name="phase" id="optionsRadios3_3" <?php if($id<=$tot&&$result["phase"]=="segmented")echo "checked"; ?> value="segmented">
 		<label class="custom-control-label" for="optionsRadios3_3">segmented</label>
 	</div>
 	<div class="custom-control custom-radio">
@@ -163,7 +177,7 @@ else echo '
 </div>
 <div class="form-group">
 	<label for="inputNote">메모</label>
-	<textarea class="form-control" name="note" id="inputNote" rows="3"></textarea>
+	<textarea class="form-control" name="note" id="inputNote" rows="3"><?php if($id<=$tot)echo htmlspecialchars($result["note"]); ?></textarea>
 </div>
 </form>
 </div>
