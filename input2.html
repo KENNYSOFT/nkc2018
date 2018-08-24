@@ -14,16 +14,12 @@ if($id<=$tot)
 <html>
 <head>
 <meta charset="UTF-8">
-<title>원시 말뭉치 파일 정보 <?php echo $id==$tot+1?"입력":"갱신" ?></title>
+<title>원시 말뭉치 파일 정보 <?php echo($id==$tot+1?"입력":"갱신"); ?></title>
 <link rel="stylesheet" type="text/css" href="https://bootswatch.com/4/materia/bootstrap.min.css">
-<style>
-	body {
-		padding-top: 120px
-	}
-</style>
+<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-danger">
+<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-crimson">
 	<div class="container">
 		<a class="navbar-brand" href="index.html">문어 자료 정보 관리 도구</a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,10 +32,10 @@ if($id<=$tot)
 			<a class="nav-link" href="index.html">대문</a>
 			</li>
 			<li class="nav-item dropdown active">
-			<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" id="inputs">정보 신규입력/갱신 <span class="sr-only">(현재)</span></a>
+			<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" id="inputs">정보 신규입력/갱신</a>
 			<div class="dropdown-menu" aria-labelledby="inputs">
-				<a class="dropdown-item" href="input.html<?php if(isset($_SERVER["QUERY_STRING"]))echo("?".$_SERVER["QUERY_STRING"]); ?>">원전 사용 승인 / 서지 정보 입력</a>
-				<a class="dropdown-item active" href="#">원시 말뭉치 파일 정보 입력</a>
+				<a class="dropdown-item" href="input.html<?php if(isset($_GET["id"]))echo("?id=".$_GET["id"]); ?>">원전 사용 승인 / 서지 정보 입력</a>
+				<a class="dropdown-item active" href="#">원시 말뭉치 파일 정보 입력 <span class="sr-only">(현재)</span></a>
 			</div>
 			</li>
 			<li class="nav-item">
@@ -57,107 +53,107 @@ if($id<=$tot)
 <?php
 session_start();
 if(!isset($_SESSION["user_id"]))header("Location: index.html?login_needed");
-else echo '
+else echo('
 		<form class="form-inline my-2 my-lg-0 navbar-nav" action="logout.php">
-			<span class="nav-link active">'.$_SESSION["user_name"].'님</span>
+			<a class="nav-link" href="pwchange.html">'.$_SESSION["user_name"].'님</a>
 			<button class="btn btn-secondary my-2 my-sm-0" type="submit">로그아웃</button>
-		</form>';
+		</form>');
 ?>
 		</div>
 	</div>
 </nav>
 <div class="container">
 <?php
-if(isset($_GET["error"]))echo '
+if(isset($_GET["error"]))echo('
 <div class="alert alert-dismissible alert-danger">
 	<button type="button" class="close" data-dismiss="alert">&times;</button>
 	<h4 class="alert-heading">오류가 발생했습니다.</h4>
 	<p class="mb-0">알 수 없는 오류가 발생했습니다. 어떤 상황이었는지 개발자에게 알려주시면 감사하겠습니다.</p>
-</div>';
-if(isset($_GET["save_success"]))echo '
+</div>');
+if(isset($_GET["save_success"]))echo('
 <div class="alert alert-dismissible alert-success">
 	<button type="button" class="close" data-dismiss="alert">&times;</button>
 	<h4 class="alert-heading">저장되었습니다.</h4>
 	<p class="mb-0">입력하신 내용이 모두 저장되었습니다.</p>
-</div>';
+</div>');
 ?>
 <div class="row">
-  <ul class="pagination mx-auto">
-    <li class="page-item<?php if($id==1)echo(" disabled"); ?>">
-      <a class="page-link" href="input2.html?id=<?php echo($id-1); ?>">&laquo;</a>
-    </li>
-    <li class="page-item active">
-      <a class="page-link" style="padding: 0;"><input type="number" class="form-control" value="<?php echo($id); ?>" style="width: 50px; height: 1em; text-align: center; font-size: 0.8125rem; color: white;" onkeydown="if(event.keyCode===13)window.location.href='input2.html?id='+this.value;"></a>
-    </li>
-    <li class="page-item disabled">
-      <a class="page-link" href="#">/ <?php echo($tot); ?></a>
-    </li>
-    <li class="page-item<?php if($id>$tot)echo(" disabled"); ?>">
-      <a class="page-link" href="input2.html?id=<?php echo($id+1); ?>">&raquo;</a>
-    </li>
-  </ul>
+	<ul class="pagination mx-auto">
+		<li class="page-item<?php if($id==1)echo(" disabled"); ?>">
+			<a class="page-link" href="input2.html?id=<?php echo($id-1); ?>">&laquo;</a>
+		</li>
+		<li class="page-item active">
+			<a class="page-link" style="padding: 0;"><input type="number" class="form-control" value="<?php echo($id); ?>" style="width: 50px; height: 1em; text-align: center; font-size: 0.8125rem; color: white;" onkeydown="if(event.keyCode===13)window.location.href='input2.html?id='+this.value;"></a>
+		</li>
+		<li class="page-item disabled">
+			<a class="page-link" href="#">/ <?php echo($tot); ?></a>
+		</li>
+		<li class="page-item<?php if($id>$tot)echo(" disabled"); ?>">
+			<a class="page-link" href="input2.html?id=<?php echo($id+1); ?>">&raquo;</a>
+		</li>
+	</ul>
 </div>
 <form method="post" action="input2.php">
-<input type="hidden" name="_id" value="<?php echo $id; ?>">
-<legend>원시 말뭉치 파일 정보 <?php echo $id==$tot+1?"입력":"갱신" ?> <button type="submit" class="btn btn-primary">저장</button></legend>
+<input type="hidden" name="_id" value="<?php echo($id); ?>">
+<legend>원시 말뭉치 파일 정보 <?php echo($id==$tot+1?"입력":"갱신"); ?> <button type="submit" class="btn btn-primary">저장</button></legend>
 <div class="form-group">
 	<label for="inputTitle">제목</label>
-	<input type="text" class="form-control" id="inputTitle" value="<?php if($id<=$tot)echo $result["title"]; ?>" readonly="">
+	<input type="text" class="form-control" id="inputTitle" value="<?php if($id<=$tot)echo($result["title"]); ?>" readonly="">
 </div>
 <div class="form-group">
 	<label>장르 구분</label>
 	<div class="custom-control custom-radio">
-		<input type="radio" class="custom-control-input" name="class" id="optionsRadios1_1" <?php if($id<=$tot&&$result["class"]=="신문")echo "checked"; ?> value="신문">
+		<input type="radio" class="custom-control-input" name="class" id="optionsRadios1_1" <?php if($id<=$tot&&$result["class"]=="신문")echo("checked"); ?> value="신문">
 		<label class="custom-control-label" for="optionsRadios1_1">신문</label>
 	</div>
 	<div class="custom-control custom-radio">
-		<input type="radio" class="custom-control-input" name="class" id="optionsRadios1_2" <?php if($id<=$tot&&$result["class"]=="잡지")echo "checked"; ?> value="잡지">
+		<input type="radio" class="custom-control-input" name="class" id="optionsRadios1_2" <?php if($id<=$tot&&$result["class"]=="잡지")echo("checked"); ?> value="잡지">
 		<label class="custom-control-label" for="optionsRadios1_2">잡지</label>
 	</div>
 	<div class="custom-control custom-radio">
-		<input type="radio" class="custom-control-input" name="class" id="optionsRadios1_3" <?php if($id<=$tot&&$result["class"]=="책-상상")echo "checked"; ?> value="책-상상">
+		<input type="radio" class="custom-control-input" name="class" id="optionsRadios1_3" <?php if($id<=$tot&&$result["class"]=="책-상상")echo("checked"); ?> value="책-상상">
 		<label class="custom-control-label" for="optionsRadios1_3">책-상상</label>
 	</div>
 	<div class="custom-control custom-radio">
-		<input type="radio" class="custom-control-input" name="class" id="optionsRadios1_4" <?php if($id<=$tot&&$result["class"]=="책-정보")echo "checked"; ?> value="책-정보">
+		<input type="radio" class="custom-control-input" name="class" id="optionsRadios1_4" <?php if($id<=$tot&&$result["class"]=="책-정보")echo("checked"); ?> value="책-정보">
 		<label class="custom-control-label" for="optionsRadios1_4">책-정보</label>
 	</div>
 	<div class="custom-control custom-radio">
-		<input type="radio" class="custom-control-input" name="class" id="optionsRadios1_5" <?php if($id<=$tot&&$result["class"]=="기타")echo "checked"; ?> value="기타">
+		<input type="radio" class="custom-control-input" name="class" id="optionsRadios1_5" <?php if($id<=$tot&&$result["class"]=="기타")echo("checked"); ?> value="기타">
 		<label class="custom-control-label" for="optionsRadios1_5">기타</label>
 	</div>
 </div>
 <div class="form-group">
 	<label>샘플링방식</label>
 	<div class="custom-control custom-radio">
-		<input type="radio" class="custom-control-input" name="sampling_method" id="optionsRadios2_1" <?php if($id<=$tot&&$result["sampling_method"]=="전체")echo "checked"; ?> value="전체">
+		<input type="radio" class="custom-control-input" name="sampling_method" id="optionsRadios2_1" <?php if($id<=$tot&&$result["sampling_method"]=="전체")echo("checked"); ?> value="전체">
 		<label class="custom-control-label" for="optionsRadios2_1">전체</label>
 	</div>
 	<div class="custom-control custom-radio">
-		<input type="radio" class="custom-control-input" name="sampling_method" id="optionsRadios2_2" <?php if($id<=$tot&&$result["sampling_method"]=="무작위")echo "checked"; ?> value="무작위">
+		<input type="radio" class="custom-control-input" name="sampling_method" id="optionsRadios2_2" <?php if($id<=$tot&&$result["sampling_method"]=="무작위")echo("checked"); ?> value="무작위">
 		<label class="custom-control-label" for="optionsRadios2_2">무작위</label>
 	</div>
 	<div class="custom-control custom-radio">
-		<input type="radio" class="custom-control-input" name="sampling_method" id="optionsRadios2_3" <?php if($id<=$tot&&$result["sampling_method"]!=""&&$result["sampling_method"]!="전체"&&$result["sampling_method"]!="무작위")echo "checked"; ?> value="기타">
-		<label class="custom-control-label" for="optionsRadios2_3">기타<input type="text" class="form-control" name="sampling_method_etc" id="samplingEtc" value="<?php if($id<=$tot&&$result["sampling_method"]!="전체"&&$result["sampling_method"]!="무작위")echo $result["sampling_method"]; ?>" onclick="document.getElementById('optionsRadios2_3').checked=true;"></label>
+		<input type="radio" class="custom-control-input" name="sampling_method" id="optionsRadios2_3" <?php if($id<=$tot&&$result["sampling_method"]!=""&&$result["sampling_method"]!="전체"&&$result["sampling_method"]!="무작위")echo("checked"); ?> value="기타">
+		<label class="custom-control-label" for="optionsRadios2_3">기타<input type="text" class="form-control" name="sampling_method_etc" id="samplingEtc" value="<?php if($id<=$tot&&$result["sampling_method"]!="전체"&&$result["sampling_method"]!="무작위")echo($result["sampling_method"]); ?>" onclick="document.getElementById('optionsRadios2_3').checked=true;"></label>
 	</div>
 </div>
 <div class="form-group">
 	<label>작업 단계(완료)</label>
 	<div class="custom-control custom-radio">
-		<input type="radio" class="custom-control-input" name="phase" id="optionsRadios3_1" <?php if($id<=$tot&&$result["phase"]=="sampled")echo "checked"; ?> value="sampled">
+		<input type="radio" class="custom-control-input" name="phase" id="optionsRadios3_1" <?php if($id<=$tot&&$result["phase"]=="sampled")echo("checked"); ?> value="sampled">
 		<label class="custom-control-label" for="optionsRadios3_1">sampled</label>
 	</div>
 	<div class="custom-control custom-radio">
-		<input type="radio" class="custom-control-input" name="phase" id="optionsRadios3_2" <?php if($id<=$tot&&$result["phase"]=="filtered")echo "checked"; ?> value="filtered">
+		<input type="radio" class="custom-control-input" name="phase" id="optionsRadios3_2" <?php if($id<=$tot&&$result["phase"]=="filtered")echo("checked"); ?> value="filtered">
 		<label class="custom-control-label" for="optionsRadios3_2">filtered</label>
 	</div>
 	<div class="custom-control custom-radio">
-		<input type="radio" class="custom-control-input" name="phase" id="optionsRadios3_3" <?php if($id<=$tot&&$result["phase"]=="segmented")echo "checked"; ?> value="segmented">
+		<input type="radio" class="custom-control-input" name="phase" id="optionsRadios3_3" <?php if($id<=$tot&&$result["phase"]=="segmented")echo("checked"); ?> value="segmented">
 		<label class="custom-control-label" for="optionsRadios3_3">segmented</label>
 	</div>
 	<div class="custom-control custom-radio">
-		<input type="radio" class="custom-control-input" name="phase" id="optionsRadios3_4" <?php if($id<=$tot&&$result["phase"]=="inspected")echo "checked"; ?> value="inspected">
+		<input type="radio" class="custom-control-input" name="phase" id="optionsRadios3_4" <?php if($id<=$tot&&$result["phase"]=="inspected")echo("checked"); ?> value="inspected">
 		<label class="custom-control-label" for="optionsRadios3_4">inspected</label>
 	</div>
 </div>
@@ -165,19 +161,19 @@ if(isset($_GET["save_success"]))echo '
 	<div class="col-md-6">
 		<div class="form-group">
 			<label for="inputFileId">파일 ID</label>
-			<input type="text" class="form-control" name="file_id" id="inputFileId" value="<?php if($id<=$tot)echo $result["file_id"]; ?>" placeholder="">
+			<input type="text" class="form-control" name="file_id" id="inputFileId" value="<?php if($id<=$tot)echo($result["file_id"]); ?>" placeholder="">
 		</div>
 	</div>
 	<div class="col-md-6">
 		<div class="form-group">
 			<label for="inputTokenSize">어절수</label>
-			<input type="number" class="form-control" name="token_size" id="inputTokenSize" value="<?php if($id<=$tot)echo $result["token_size"]; ?>">
+			<input type="number" class="form-control" name="token_size" id="inputTokenSize" value="<?php if($id<=$tot)echo($result["token_size"]); ?>">
 		</div>
 	</div>
 </div>
 <div class="form-group">
 	<label for="inputNote">메모</label>
-	<textarea class="form-control" name="note" id="inputNote" rows="3"><?php if($id<=$tot)echo htmlspecialchars($result["note"]); ?></textarea>
+	<textarea class="form-control" name="note" id="inputNote" rows="3"><?php if($id<=$tot)echo(htmlspecialchars($result["note"])); ?></textarea>
 </div>
 </form>
 </div>

@@ -13,7 +13,9 @@ if(isset($_POST["id"])&&isset($_POST["password"]))
 		$row=mysqli_fetch_assoc($result);
 		$_SESSION["user_id"]=$row["_id"];
 		$_SESSION["user_name"]=$row["name"];
+		header("Location: index.html?login_success");
+		exit();
 	}
 }
-header("Location: index.html?login_success");
+header("Location: index.html?login_fail");
 ?>

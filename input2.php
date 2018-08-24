@@ -2,6 +2,9 @@
 session_start();
 if(!isset($_SESSION["user_id"]))header("Location: index.html?login_needed");
 require("connect.php");
+$result=mysqli_query($connection,"SELECT * FROM informations");
+$cols=array();
+while($property=mysqli_fetch_field($result))$cols[]=$property->name;
 $result=mysqli_query($connection,"SELECT COUNT(*) FROM informations;");
 $tot=intval(mysqli_fetch_row($result)[0]);
 $id=intval($_POST["_id"]);
@@ -11,6 +14,7 @@ unset($_POST["sampling_method_etc"]);
 $new=array();
 foreach($_POST as $col=>$val)
 {
+	if(!in_array($col,$cols))continue;
 	if(strlen($val)==0)$new[$col]="NULL";
 	else $new[$col]="'".mysqli_real_escape_string($connection,$val)."'";
 }
@@ -47,7 +51,11 @@ else
 	$query=substr($query,0,-1).");";
 }
 $result=mysqli_query($connection,$query);
-if(!$result)Header("Location: input2.html?id=".$id."&error");
+if(!$result)
+{
+	Header("Location: input2.html?id=".$id."&error");
+	exit();
+}
 mysqli_query($connection,$log);
 Header("Location: input2.html?id=".$id."&save_success");
 ?>
