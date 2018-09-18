@@ -1,7 +1,7 @@
 <?php
 require("connect.php");
 $xml_filename="export_".date("Ymd_His").".xml";
-$result=mysqli_query($connection,"SELECT * FROM informations");
+$result=mysqli_query($connection,"SELECT * FROM informations;");
 $xml='<?xml version="1.0" encoding="UTF-8" ?>'."\r\n";
 while($row=mysqli_fetch_assoc($result))
 {

@@ -73,17 +73,17 @@ if(isset($_GET["pw_change_success"]))echo('
 <form method="post" action="pwchange.php">
 <legend>비밀번호 변경 <button type="submit" class="btn btn-primary">저장</button></legend>
 <div class="form-group">
-	<label for="inputTitle">현재 비밀번호</label>
+	<label for="inputPassword">현재 비밀번호</label>
 	<input type="password" class="form-control<?php if(isset($_GET["error_password"]))echo(" is-invalid"); ?>" name="password" id="inputPassword">
 	<?php if(isset($_GET["error_password"]))echo('<div class="invalid-feedback">현재 비밀번호가 맞지 않습니다.</div>'); ?>
 </div>
 <div class="form-group">
-	<label for="inputTitle">새로운 비밀번호</label>
+	<label for="inputNewPassword">새로운 비밀번호</label>
 	<input type="password" class="form-control<?php if(isset($_GET["error_chk"]))echo(" is-invalid"); ?>" name="new_password" id="inputNewPassword">
 	<?php if(isset($_GET["error_chk"]))echo('<div class="invalid-feedback">새로운 비밀번호 확인이 일치하지 않습니다.</div>'); ?>
 </div>
 <div class="form-group">
-	<label for="inputTitle">새로운 비밀번호 확인</label>
+	<label for="inputNewPasswordChk">새로운 비밀번호 확인</label>
 	<input type="password" class="form-control<?php if(isset($_GET["error_chk"]))echo(" is-invalid"); ?>" name="new_password_chk" id="inputNewPasswordChk">
 	<?php if(isset($_GET["error_chk"]))echo('<div class="invalid-feedback">새로운 비밀번호 확인이 일치하지 않습니다.</div>'); ?>
 </div>

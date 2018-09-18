@@ -1,7 +1,7 @@
 <?php
 require("connect.php");
 $json_filename="export_".date("Ymd_His").".json";
-$result=mysqli_query($connection,"SELECT * FROM informations");
+$result=mysqli_query($connection,"SELECT * FROM informations;");
 $json="[\n";
 while($row=mysqli_fetch_assoc($result))
 {
