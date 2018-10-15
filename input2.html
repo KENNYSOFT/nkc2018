@@ -100,61 +100,69 @@ if(isset($_GET["save_success"]))echo('
 	<label for="inputTitle">제목</label>
 	<input type="text" class="form-control" id="inputTitle" value="<?php if($id<=$tot)echo($result["title"]); ?>" readonly="">
 </div>
-<div class="form-group">
-	<label>장르 구분</label>
-	<div class="custom-control custom-radio">
-		<input type="radio" class="custom-control-input" name="class" id="optionsRadios1_1" <?php if($id<=$tot&&$result["class"]=="신문")echo("checked"); ?> value="신문">
-		<label class="custom-control-label" for="optionsRadios1_1">신문</label>
+<div class="row">
+	<div class="col-md-4">
+		<div class="form-group">
+			<label>장르 구분</label>
+			<div class="custom-control custom-radio">
+				<input type="radio" class="custom-control-input" name="class" id="optionsRadios1_1" <?php if($id<=$tot&&$result["class"]=="신문")echo("checked"); ?> value="신문">
+				<label class="custom-control-label" for="optionsRadios1_1">신문</label>
+			</div>
+			<div class="custom-control custom-radio">
+				<input type="radio" class="custom-control-input" name="class" id="optionsRadios1_2" <?php if($id<=$tot&&$result["class"]=="잡지")echo("checked"); ?> value="잡지">
+				<label class="custom-control-label" for="optionsRadios1_2">잡지</label>
+			</div>
+			<div class="custom-control custom-radio">
+				<input type="radio" class="custom-control-input" name="class" id="optionsRadios1_3" <?php if($id<=$tot&&$result["class"]=="책-상상")echo("checked"); ?> value="책-상상">
+				<label class="custom-control-label" for="optionsRadios1_3">책-상상</label>
+			</div>
+			<div class="custom-control custom-radio">
+				<input type="radio" class="custom-control-input" name="class" id="optionsRadios1_4" <?php if($id<=$tot&&$result["class"]=="책-정보")echo("checked"); ?> value="책-정보">
+				<label class="custom-control-label" for="optionsRadios1_4">책-정보</label>
+			</div>
+			<div class="custom-control custom-radio">
+				<input type="radio" class="custom-control-input" name="class" id="optionsRadios1_5" <?php if($id<=$tot&&$result["class"]=="기타")echo("checked"); ?> value="기타">
+				<label class="custom-control-label" for="optionsRadios1_5">기타</label>
+			</div>
+		</div>
 	</div>
-	<div class="custom-control custom-radio">
-		<input type="radio" class="custom-control-input" name="class" id="optionsRadios1_2" <?php if($id<=$tot&&$result["class"]=="잡지")echo("checked"); ?> value="잡지">
-		<label class="custom-control-label" for="optionsRadios1_2">잡지</label>
+	<div class="col-md-4">
+		<div class="form-group">
+			<label>샘플링방식</label>
+			<div class="custom-control custom-radio">
+				<input type="radio" class="custom-control-input" name="sampling_method" id="optionsRadios2_1" <?php if($id<=$tot&&$result["sampling_method"]=="전체")echo("checked"); ?> value="전체">
+				<label class="custom-control-label" for="optionsRadios2_1">전체</label>
+			</div>
+			<div class="custom-control custom-radio">
+				<input type="radio" class="custom-control-input" name="sampling_method" id="optionsRadios2_2" <?php if($id<=$tot&&$result["sampling_method"]=="무작위")echo("checked"); ?> value="무작위">
+				<label class="custom-control-label" for="optionsRadios2_2">무작위</label>
+			</div>
+			<div class="custom-control custom-radio">
+				<input type="radio" class="custom-control-input" name="sampling_method" id="optionsRadios2_3" <?php if($id<=$tot&&$result["sampling_method"]!=""&&$result["sampling_method"]!="전체"&&$result["sampling_method"]!="무작위")echo("checked"); ?> value="기타">
+				<label class="custom-control-label" for="optionsRadios2_3">기타<input type="text" class="form-control" name="sampling_method_etc" id="samplingEtc" value="<?php if($id<=$tot&&$result["sampling_method"]!="전체"&&$result["sampling_method"]!="무작위")echo($result["sampling_method"]); ?>" onclick="document.getElementById('optionsRadios2_3').checked=true;"></label>
+			</div>
+		</div>
 	</div>
-	<div class="custom-control custom-radio">
-		<input type="radio" class="custom-control-input" name="class" id="optionsRadios1_3" <?php if($id<=$tot&&$result["class"]=="책-상상")echo("checked"); ?> value="책-상상">
-		<label class="custom-control-label" for="optionsRadios1_3">책-상상</label>
-	</div>
-	<div class="custom-control custom-radio">
-		<input type="radio" class="custom-control-input" name="class" id="optionsRadios1_4" <?php if($id<=$tot&&$result["class"]=="책-정보")echo("checked"); ?> value="책-정보">
-		<label class="custom-control-label" for="optionsRadios1_4">책-정보</label>
-	</div>
-	<div class="custom-control custom-radio">
-		<input type="radio" class="custom-control-input" name="class" id="optionsRadios1_5" <?php if($id<=$tot&&$result["class"]=="기타")echo("checked"); ?> value="기타">
-		<label class="custom-control-label" for="optionsRadios1_5">기타</label>
-	</div>
-</div>
-<div class="form-group">
-	<label>샘플링방식</label>
-	<div class="custom-control custom-radio">
-		<input type="radio" class="custom-control-input" name="sampling_method" id="optionsRadios2_1" <?php if($id<=$tot&&$result["sampling_method"]=="전체")echo("checked"); ?> value="전체">
-		<label class="custom-control-label" for="optionsRadios2_1">전체</label>
-	</div>
-	<div class="custom-control custom-radio">
-		<input type="radio" class="custom-control-input" name="sampling_method" id="optionsRadios2_2" <?php if($id<=$tot&&$result["sampling_method"]=="무작위")echo("checked"); ?> value="무작위">
-		<label class="custom-control-label" for="optionsRadios2_2">무작위</label>
-	</div>
-	<div class="custom-control custom-radio">
-		<input type="radio" class="custom-control-input" name="sampling_method" id="optionsRadios2_3" <?php if($id<=$tot&&$result["sampling_method"]!=""&&$result["sampling_method"]!="전체"&&$result["sampling_method"]!="무작위")echo("checked"); ?> value="기타">
-		<label class="custom-control-label" for="optionsRadios2_3">기타<input type="text" class="form-control" name="sampling_method_etc" id="samplingEtc" value="<?php if($id<=$tot&&$result["sampling_method"]!="전체"&&$result["sampling_method"]!="무작위")echo($result["sampling_method"]); ?>" onclick="document.getElementById('optionsRadios2_3').checked=true;"></label>
-	</div>
-</div>
-<div class="form-group">
-	<label>작업 단계(완료)</label>
-	<div class="custom-control custom-radio">
-		<input type="radio" class="custom-control-input" name="phase" id="optionsRadios3_1" <?php if($id<=$tot&&$result["phase"]=="sampled")echo("checked"); ?> value="sampled">
-		<label class="custom-control-label" for="optionsRadios3_1">sampled</label>
-	</div>
-	<div class="custom-control custom-radio">
-		<input type="radio" class="custom-control-input" name="phase" id="optionsRadios3_2" <?php if($id<=$tot&&$result["phase"]=="filtered")echo("checked"); ?> value="filtered">
-		<label class="custom-control-label" for="optionsRadios3_2">filtered</label>
-	</div>
-	<div class="custom-control custom-radio">
-		<input type="radio" class="custom-control-input" name="phase" id="optionsRadios3_3" <?php if($id<=$tot&&$result["phase"]=="segmented")echo("checked"); ?> value="segmented">
-		<label class="custom-control-label" for="optionsRadios3_3">segmented</label>
-	</div>
-	<div class="custom-control custom-radio">
-		<input type="radio" class="custom-control-input" name="phase" id="optionsRadios3_4" <?php if($id<=$tot&&$result["phase"]=="inspected")echo("checked"); ?> value="inspected">
-		<label class="custom-control-label" for="optionsRadios3_4">inspected</label>
+	<div class="col-md-4">
+		<div class="form-group">
+			<label>작업 단계(완료)</label>
+			<div class="custom-control custom-radio">
+				<input type="radio" class="custom-control-input" name="phase" id="optionsRadios3_1" <?php if($id<=$tot&&$result["phase"]=="sampled")echo("checked"); ?> value="sampled">
+				<label class="custom-control-label" for="optionsRadios3_1">sampled</label>
+			</div>
+			<div class="custom-control custom-radio">
+				<input type="radio" class="custom-control-input" name="phase" id="optionsRadios3_2" <?php if($id<=$tot&&$result["phase"]=="filtered")echo("checked"); ?> value="filtered">
+				<label class="custom-control-label" for="optionsRadios3_2">filtered</label>
+			</div>
+			<div class="custom-control custom-radio">
+				<input type="radio" class="custom-control-input" name="phase" id="optionsRadios3_3" <?php if($id<=$tot&&$result["phase"]=="segmented")echo("checked"); ?> value="segmented">
+				<label class="custom-control-label" for="optionsRadios3_3">segmented</label>
+			</div>
+			<div class="custom-control custom-radio">
+				<input type="radio" class="custom-control-input" name="phase" id="optionsRadios3_4" <?php if($id<=$tot&&$result["phase"]=="inspected")echo("checked"); ?> value="inspected">
+				<label class="custom-control-label" for="optionsRadios3_4">inspected</label>
+			</div>
+		</div>
 	</div>
 </div>
 <div class="row">

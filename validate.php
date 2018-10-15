@@ -56,38 +56,39 @@
 </nav>
 <div class="container">
 <?php
+$cnt=count($_FILES["new_file"]["tmp_name"]);
 if(isset($_POST["fileFrom"])&&$_POST["fileFrom"]>0)
 {
 	Header("Location: validate.html?under_construction");
 	exit();
 }
-else if(strlen($_FILES["new_file"]["tmp_name"])==0)
+else if($cnt==0)
 {
 	Header("Location: validate.html?not_uploaded");
 	exit();
 }
 libxml_use_internal_errors(true);
-$xml=simplexml_load_file($_FILES["new_file"]["tmp_name"]);
-if($xml==false)
+for($i=0;$i<$cnt;++$i)
 {
-	$errors="";
-	foreach(libxml_get_errors() as $error)
+	$xml=simplexml_load_file($_FILES["new_file"]["tmp_name"][$i]);
+	if($xml==false)
 	{
-		$errors.="<br>".$error->message;
-	}
-	echo('
+		$errors="";
+		foreach(libxml_get_errors() as $error)$errors.="<br>".$error->message;
+		echo('
 <div class="alert alert-dismissible alert-danger">
 	<button type="button" class="close" data-dismiss="alert">&times;</button>
-	<h4 class="alert-heading">검사가 실패했습니다.</h4>
+	<h4 class="alert-heading">['.$_FILES["new_file"]["name"][$i].'] 검사에 실패했습니다.</h4>
 	<p class="mb-0">XML에 오류가 있습니다:'.$errors.'</p>
 </div>');
-}
-else echo('
+	}
+	else echo('
 <div class="alert alert-dismissible alert-success">
 	<button type="button" class="close" data-dismiss="alert">&times;</button>
-	<h4 class="alert-heading">검사가 성공했습니다.</h4>
+	<h4 class="alert-heading">['.$_FILES["new_file"]["name"][$i].'] 검사에 성공했습니다.</h4>
 	<p class="mb-0">XML에 오류가 없습니다.</p>
 </div>');
+}
 ?>
 <button type="submit" class="btn btn-primary" onclick="window.location.href='validate.html'">돌아가기</button>
 </div>
