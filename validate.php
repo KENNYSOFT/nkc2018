@@ -1,7 +1,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>XML 검사</title>
+	<title>XML 검증</title>
 	<link rel="stylesheet" type="text/css" href="https://bootswatch.com/4/materia/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
@@ -78,14 +78,14 @@ for($i=0;$i<$cnt;++$i)
 		echo('
 <div class="alert alert-dismissible alert-danger">
 	<button type="button" class="close" data-dismiss="alert">&times;</button>
-	<h4 class="alert-heading">['.$_FILES["new_file"]["name"][$i].'] 검사에 실패했습니다.</h4>
+	<h4 class="alert-heading">['.$_FILES["new_file"]["name"][$i].'] 검증에 실패했습니다.</h4>
 	<p class="mb-0">XML에 오류가 있습니다:'.$errors.'</p>
 </div>');
 	}
 	else echo('
 <div class="alert alert-dismissible alert-success">
 	<button type="button" class="close" data-dismiss="alert">&times;</button>
-	<h4 class="alert-heading">['.$_FILES["new_file"]["name"][$i].'] 검사에 성공했습니다.</h4>
+	<h4 class="alert-heading">['.$_FILES["new_file"]["name"][$i].'] 검증에 성공했습니다.</h4>
 	<p class="mb-0">XML에 오류가 없습니다.</p>
 </div>');
 }
